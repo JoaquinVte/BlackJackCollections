@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import java.net.URL;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -48,7 +46,7 @@ public class Juego {
 			System.out.println("Has perdido!");
 		}
 		
-		Sonido(new File("./src/sonidos/game-over.wav"));
+		emitirSonido(new File("./src/sonidos/game-over.wav"));
 		
 		try {
 			Thread.sleep(10000);
@@ -74,9 +72,9 @@ public class Juego {
 
 			if (puntosMaquina > 21) {
 				System.out.println("Me he pasado \u2639");
-				Sonido(new File("./src/sonidos/fallo.wav"));
+				emitirSonido(new File("./src/sonidos/fallo.wav"));
 			} else {
-				Sonido(new File("./src/sonidos/acierto.wav"));
+				emitirSonido(new File("./src/sonidos/acierto.wav"));
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
@@ -113,19 +111,23 @@ public class Juego {
 
 			if (puntos > 21) {
 				System.out.println("Te has pasado \u2639");
-				Sonido(new File("./src/sonidos/fallo.wav"));
+				emitirSonido(new File("./src/sonidos/fallo.wav"));
 			} else {
-				Sonido(new File("./src/sonidos/acierto.wav"));
+				emitirSonido(new File("./src/sonidos/acierto.wav"));
 				System.out.println("Quieres otra carta? [s/n]");
 				opcion = entrada.nextLine().charAt(0);
 			}
 		}
 		if(opcion=='n')System.out.println("La siguiente carta era ..." +baraja.peek());
+		
+		entrada.close();
 		return (puntos > 21) ? 0 : puntos;
 	}
 
-	public static void Sonido(File f) {
+	public static void emitirSonido(File f) {
+		
 		Clip sonido;
+		
 		try {
 			sonido = AudioSystem.getClip(null);
 
@@ -133,8 +135,7 @@ public class Juego {
 			ais = AudioSystem.getAudioInputStream(f);
 
 			sonido.open(ais);
-			sonido.start();
-			
+			sonido.start();			
 
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException  e) {
 			// TODO Auto-generated catch block
@@ -144,7 +145,7 @@ public class Juego {
 
 }
 
-class Carta implements Comparable {
+class Carta implements Comparable<Object> {
 	private char valor;
 	private char palo;
 
