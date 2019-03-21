@@ -20,12 +20,17 @@ public class Juego {
 		// "\u2664".charAt(0), "\u2667".charAt(0) };
 		char[] valor = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K' };
 		double puntosJugador = 0, puntosMaquina = 0;
-
+		String color = "";
+		
 		Deque<Carta> baraja = new LinkedList<Carta>();
 
 		for (char p : palo) {
 			for (char v : valor) {
-				baraja.add(new Carta(v, p));
+				if (p == '♥' || p == '♦')
+					color=Carta.ROJO;
+				else
+					color =Carta.NEGRO;
+					baraja.add(new Carta(v, p,color));
 			}
 		}
 
@@ -45,9 +50,9 @@ public class Juego {
 		} else {
 			System.out.println("Has perdido!");
 		}
-		
+
 		emitirSonido(new File("./src/sonidos/game-over.wav"));
-		
+
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
@@ -84,9 +89,9 @@ public class Juego {
 			}
 
 		}
-		if (puntosMaquina <= 21){
+		if (puntosMaquina <= 21) {
 			System.out.println("Me planto \u263A");
-			
+
 		}
 
 		return (puntosMaquina > 21) ? 0 : puntosMaquina;
@@ -100,7 +105,7 @@ public class Juego {
 		System.out.println("Quieres carta? [s/n]");
 		opcion = entrada.nextLine().charAt(0);
 
-		while (puntos < 21 && opcion != 'n') {
+		while (puntos < 21 && opcion != 'n' && opcion != 'N') {
 
 			mano.add(baraja.pop());
 			puntos = mano.stream().collect(Collectors.summingDouble(Carta::getValorJuego));
@@ -118,16 +123,17 @@ public class Juego {
 				opcion = entrada.nextLine().charAt(0);
 			}
 		}
-		if(opcion=='n')System.out.println("La siguiente carta era ..." +baraja.peek());
-		
+		if (opcion == 'n')
+			System.out.println("La siguiente carta era ..." + baraja.peek());
+
 		entrada.close();
 		return (puntos > 21) ? 0 : puntos;
 	}
 
 	public static void emitirSonido(File f) {
-		
+
 		Clip sonido;
-		
+
 		try {
 			sonido = AudioSystem.getClip(null);
 
@@ -135,9 +141,9 @@ public class Juego {
 			ais = AudioSystem.getAudioInputStream(f);
 
 			sonido.open(ais);
-			sonido.start();			
+			sonido.start();
 
-		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException  e) {
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -146,13 +152,20 @@ public class Juego {
 }
 
 class Carta implements Comparable<Object> {
+
+	public static final String ROJO = "\u001b[1;91m";
+	public static final String NEGRO = "\u001b[1;30m";
+	public static final String DEFAULT = "\u001b[0m";
+
 	private char valor;
 	private char palo;
+	private String color;
 
-	public Carta(char valor, char palo) {
+	public Carta(char valor, char palo, String color) {
 		super();
 		this.valor = valor;
 		this.palo = palo;
+		this.color = color;
 	}
 
 	/**
@@ -207,7 +220,7 @@ class Carta implements Comparable<Object> {
 	 */
 	@Override
 	public String toString() {
-		return valor + " " + palo;
+		return color + valor + " " + palo + DEFAULT;
 	}
 
 	@Override
