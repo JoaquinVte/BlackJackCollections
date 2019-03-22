@@ -1,6 +1,5 @@
 package cartas;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,27 +13,28 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class Juego {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		char[] palo = { '♣', '♠', '♥', '♦' };
-		// char[] palo = { "\u2661".charAt(0), "\u2662".charAt(0),
-		// "\u2664".charAt(0), "\u2667".charAt(0) };
+		// char[] palo = { "\u2661".charAt(0), "\u2662".charAt(0), "\u2664".charAt(0), "\u2667".charAt(0) };
 		char[] valor = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K' };
 		double puntosJugador = 0, puntosMaquina = 0;
 		String color = "";
-		
+
 		Deque<Carta> baraja = new LinkedList<Carta>();
 
 		for (char p : palo) {
 			for (char v : valor) {
 				if (p == '♥' || p == '♦')
-					color=Carta.ROJO;
+					color = Carta.ROJO;
 				else
-					color =Carta.NEGRO;
-					baraja.add(new Carta(v, p,color));
+					color = Carta.NEGRO;
+				baraja.add(new Carta(v, p, color));
 			}
 		}
 
 		Collections.shuffle((List<?>) baraja);
+
+		System.out.println((new i2ascii("black.jpg")).ConvertToAscii());
 
 		puntosJugador = jugador(baraja);
 
@@ -42,21 +42,21 @@ public class Juego {
 		puntosMaquina = maquina(puntosJugador, baraja);
 
 		if (puntosJugador == 0) {
-			System.out.println("Has perdido!");
+			System.out.println("Has perdido!\n");
 		} else if (puntosMaquina == 0) {
-			System.out.println("Has ganado !!!");
+			System.out.println("Has ganado !!!\n");
 		} else if (puntosJugador > puntosMaquina) {
-			System.out.println("Has ganado !!!");
+			System.out.println("Has ganado !!!\n");
 		} else {
-			System.out.println("Has perdido!");
+			System.out.println("Has perdido!\n");
 		}
 
-		emitirSonido(new File("./src/sonidos/game-over.wav"));
+		System.out.println((new i2ascii("gameover.jpg")).ConvertToAscii());
+		emitirSonido("game-over.wav");
 
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -77,13 +77,12 @@ public class Juego {
 
 			if (puntosMaquina > 21) {
 				System.out.println("Me he pasado \u2639");
-				emitirSonido(new File("./src/sonidos/fallo.wav"));
+				emitirSonido("fallo.wav");
 			} else {
-				emitirSonido(new File("./src/sonidos/acierto.wav"));
+				emitirSonido("acierto.wav");
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -116,9 +115,9 @@ public class Juego {
 
 			if (puntos > 21) {
 				System.out.println("Te has pasado \u2639");
-				emitirSonido(new File("./src/sonidos/fallo.wav"));
+				emitirSonido("fallo.wav");
 			} else {
-				emitirSonido(new File("./src/sonidos/acierto.wav"));
+				emitirSonido("acierto.wav");
 				System.out.println("Quieres otra carta? [s/n]");
 				opcion = entrada.nextLine().charAt(0);
 			}
@@ -130,7 +129,7 @@ public class Juego {
 		return (puntos > 21) ? 0 : puntos;
 	}
 
-	public static void emitirSonido(File f) {
+	public static void emitirSonido(String f) {
 
 		Clip sonido;
 
@@ -138,13 +137,12 @@ public class Juego {
 			sonido = AudioSystem.getClip(null);
 
 			AudioInputStream ais;
-			ais = AudioSystem.getAudioInputStream(f);
+			ais = AudioSystem.getAudioInputStream(Juego.class.getResource("/sonidos/"+f));
 
 			sonido.open(ais);
 			sonido.start();
 
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -168,9 +166,6 @@ class Carta implements Comparable<Object> {
 		this.color = color;
 	}
 
-	/**
-	 * @return the valor
-	 */
 	public float getValorJuego() {
 		switch (valor) {
 		case ('J'):
@@ -183,41 +178,22 @@ class Carta implements Comparable<Object> {
 
 	}
 
-	/**
-	 * @return the valor
-	 */
 	public char getValor() {
 		return valor;
 	}
 
-	/**
-	 * @return the palo
-	 */
 	public char getPalo() {
 		return palo;
 	}
 
-	/**
-	 * @param valor
-	 *            the valor to set
-	 */
 	public void setValor(char valor) {
 		this.valor = valor;
 	}
 
-	/**
-	 * @param palo
-	 *            the palo to set
-	 */
 	public void setPalo(char palo) {
 		this.palo = palo;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return color + valor + " " + palo + DEFAULT;
@@ -225,7 +201,7 @@ class Carta implements Comparable<Object> {
 
 	@Override
 	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
+
 		int p = ((Carta) o).getPalo() - palo;
 		if (p != 0)
 			return p;
