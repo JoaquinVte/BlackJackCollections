@@ -24,11 +24,7 @@ public class Juego {
 
 		for (char p : palo) {
 			for (char v : valor) {
-				if (p == '♥' || p == '♦')
-					color = Carta.ROJO;
-				else
-					color = Carta.NEGRO;
-				baraja.add(new Carta(v, p, color));
+				baraja.add(new Carta(v, p));
 			}
 		}
 
@@ -159,11 +155,15 @@ class Carta implements Comparable<Object> {
 	private char palo;
 	private String color;
 
-	public Carta(char valor, char palo, String color) {
+	public Carta(char valor, char palo) {
 		super();
 		this.valor = valor;
 		this.palo = palo;
 		this.color = color;
+		if (palo == '♥' || palo == '♦')
+			color = Carta.ROJO;
+		else
+			color = Carta.NEGRO;
 	}
 
 	public float getValorJuego() {
