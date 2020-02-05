@@ -37,7 +37,7 @@ public class Juego {
 
 		puntosJugador = jugador(baraja);
 
-		System.out.println("\n\nAhora me toca a mi.... preparate a perder");
+		System.out.println("\n\nAhora me toca a mi.... preparate para perder");
 		puntosMaquina = maquina(puntosJugador, baraja);
 
 		if (puntosJugador == 0) {
