@@ -12,13 +12,16 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Juego {
 
+	public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String DEFAULT = "\u001b[0m";
+
 	public static void main(String[] args) {
-		
+
 		char[] palo = { '♣', '♠', '♥', '♦' };
-		// char[] palo = { "\u2661".charAt(0), "\u2662".charAt(0), "\u2664".charAt(0), "\u2667".charAt(0) };
+		// char[] palo = { "\u2661".charAt(0), "\u2662".charAt(0),
+		// "\u2664".charAt(0), "\u2667".charAt(0) };
 		char[] valor = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K' };
 		double puntosJugador = 0, puntosMaquina = 0;
-		String color = "";
 
 		Deque<Carta> baraja = new LinkedList<Carta>();
 
@@ -42,13 +45,13 @@ public class Juego {
 		} else if (puntosMaquina == 0) {
 			System.out.println("Has ganado !!!\n");
 		} else if (puntosJugador > puntosMaquina) {
-			System.out.println("Has ganado !!!\n");
+			System.out.println("Has ganado !!!\n" + ANSI_YELLOW + "\uD83C\uDFC6" + DEFAULT);
 		} else {
-			System.out.println("Has perdido!\n");
+			System.out.println("Has perdido!\n" + ANSI_YELLOW + "\uD83D\uDE2D" + DEFAULT);
 		}
 
 		System.out.println((new i2ascii("gameover.jpg")).ConvertToAscii());
-		emitirSonido("game-over.wav");
+		playSound("game-over.wav");
 
 		try {
 			Thread.sleep(10000);
@@ -63,7 +66,8 @@ public class Juego {
 		List<Carta> mano = new LinkedList<Carta>();
 
 		while (puntosMaquina < puntosJugador) {
-			System.out.println("Quiero otra carta \u261D");
+			System.out.println("Quiero otra carta \uD83C\uDCCF");
+
 			mano.add(baraja.pop());
 			puntosMaquina = mano.stream().collect(Collectors.summingDouble(Carta::getValorJuego));
 			for (Carta c : mano)
@@ -72,10 +76,10 @@ public class Juego {
 			System.out.println("Puntos: " + puntosMaquina);
 
 			if (puntosMaquina > 21) {
-				System.out.println("Me he pasado \u2639");
-				emitirSonido("fallo.wav");
+				System.out.println("Me he pasado \uD83D\uDE05");
+				playSound("fallo.wav");
 			} else {
-				emitirSonido("acierto.wav");
+				playSound("acierto.wav");
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
@@ -85,7 +89,7 @@ public class Juego {
 
 		}
 		if (puntosMaquina <= 21) {
-			System.out.println("Me planto \u263A");
+			System.out.println("Me planto \uD83D\uDCB0");
 
 		}
 
@@ -110,10 +114,10 @@ public class Juego {
 			System.out.println("Puntos: " + puntos);
 
 			if (puntos > 21) {
-				System.out.println("Te has pasado \u2639");
-				emitirSonido("fallo.wav");
+				System.out.println("Te has pasado \uD83D\uDE05");
+				playSound("fallo.wav");
 			} else {
-				emitirSonido("acierto.wav");
+				playSound("acierto.wav");
 				System.out.println("Quieres otra carta? [s/n]");
 				opcion = entrada.nextLine().charAt(0);
 			}
@@ -125,18 +129,18 @@ public class Juego {
 		return (puntos > 21) ? 0 : puntos;
 	}
 
-	public static void emitirSonido(String f) {
+	public static void playSound(String f) {
 
-		Clip sonido;
+		Clip sound;
 
 		try {
-			sonido = AudioSystem.getClip(null);
+			sound = AudioSystem.getClip(null);
 
 			AudioInputStream ais;
-			ais = AudioSystem.getAudioInputStream(Juego.class.getResource("/sonidos/"+f));
+			ais = AudioSystem.getAudioInputStream(Juego.class.getResource("/sounds/" + f));
 
-			sonido.open(ais);
-			sonido.start();
+			sound.open(ais);
+			sound.start();
 
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
@@ -159,7 +163,7 @@ class Carta implements Comparable<Object> {
 		super();
 		this.valor = valor;
 		this.palo = palo;
-		this.color = color;
+
 		if (palo == '♥' || palo == '♦')
 			color = Carta.ROJO;
 		else

@@ -5,4 +5,4 @@
  * @author joaalsai
  *
  */
-package sonidos;
+package sounds;
